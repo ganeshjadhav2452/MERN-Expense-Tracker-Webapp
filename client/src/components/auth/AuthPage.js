@@ -51,7 +51,7 @@ function AuthPage() {
     if (isLogin) {
       try {
         setIsLoading(true);
-          dispatch(signInUser(userDetails))
+         await dispatch(signInUser(userDetails))
           navigate('/')
         setIsLoading(false);
      

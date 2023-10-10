@@ -8,6 +8,7 @@ const verifyUser = (req, res, next) => {
     // Verify the token using HS256 algorithm and the shared secret key
    
     let verified = jwt.verify(token,process.env.JWT_SECRETE_KEY);
+    console.log('this is veried obj', verified)
    req.userId = verified.id
 
     

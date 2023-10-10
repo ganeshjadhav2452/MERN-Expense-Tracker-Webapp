@@ -9,23 +9,23 @@ const awsS3Controllers  = require('../controllers/awsS3Controllers')
 
 
 router.post('/user/signup',userControllers.signUp)
-router.post('/password/sendemailforresetpassword',userControllers.sendMailForResetPassword)
-router.post('/resetpassword/:uuid',userControllers.resetPassword)
-
 router.post('/user/signin',userControllers.signIn)
+// router.post('/password/sendemailforresetpassword',userControllers.sendMailForResetPassword)
+// router.post('/resetpassword/:uuid',userControllers.resetPassword)
 
-router.get('/getinitialuserdetails',verifyUser,userControllers.getInitialUserDetails)
+
+// router.get('/getinitialuserdetails',verifyUser,userControllers.getInitialUserDetails)
 
 router.post('/postexpense',verifyUser,expenseControllers.postExpense)
 router.get('/getexpenses',verifyUser,expenseControllers.getExpenses)
-router.delete('/delete/:id',verifyUser,expenseControllers.deleteExpense)
+// router.delete('/delete/:id',verifyUser,expenseControllers.deleteExpense)
 
-router.post('/checkout',verifyUser,paymentController.createOrder)
-router.post('/verifypayment',verifyUser,paymentController.verifyPayment)
+// router.post('/checkout',verifyUser,paymentController.createOrder)
+// router.post('/verifypayment',verifyUser,paymentController.verifyPayment)
 
 
-router.get('/premium/showdleaderboard',verifyUser,leaderboardControllers.getLeaderboardData)
+// router.get('/premium/showdleaderboard',verifyUser,leaderboardControllers.getLeaderboardData)
 
-router.get('/download',verifyUser,awsS3Controllers.downloadExpenses)
+// router.get('/download',verifyUser,awsS3Controllers.downloadExpenses)
 module.exports = router;
 

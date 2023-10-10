@@ -1,40 +1,34 @@
-const SequelizePackage = require('sequelize')
-const Expense = require('./expenseModel')
-const sequelize = require('../utils/database')
+
+const mongoose = require('mongoose');
+const { INTEGER } = require('sequelize');
 
 
-const User = sequelize.define('user',{
-    id:{
-        type:SequelizePackage.INTEGER,
-        autoIncrement:true,
-        primaryKey:true,
-        allowNull:false
-    },
+const UserSchema = new mongoose.Schema({
+  
     name:{
-        type:SequelizePackage.STRING,
-        allowNull:false
+        type:String,
+        require:false
     },
     email:{
-        type:SequelizePackage.STRING,
-        allowNull:false
+        type:String,
+        require:false
     },
     password:{
-        type:SequelizePackage.STRING,
-        allowNull:false,
-
+        type:String,
+        require:false
     },
     isPremiumUser:{
-        type:SequelizePackage.BOOLEAN
+        type:Boolean
     },
     total_cost:{
-        type:SequelizePackage.BIGINT
+        type:Number
     }
 
 })
 
-module.exports =  User;
-
-User.hasMany(Expense)
+module.exports =  mongoose.model('User',UserSchema );
 
 
-Expense.belongsTo(User)
+
+
+

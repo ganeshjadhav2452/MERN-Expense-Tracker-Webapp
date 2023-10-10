@@ -1,23 +1,15 @@
-const SequelizePackage = require('sequelize')
-
-const sequelize = require('../utils/database');
-const User = require('./userModel');
 
 
-const Order = sequelize.define('order',{
-    id:{
-        type:SequelizePackage.INTEGER,
-        autoIncrement:true,
-        allowNull:false,
-        primaryKey:true
+const mongoose = require('mongoose');
 
-    },
+
+
+const OrderSchema = new mongoose.Schema({
+
    
-    orderId:SequelizePackage.STRING,
-    status:SequelizePackage.STRING,
+    orderId:String,
+    status:String,
 })
 
-module.exports = Order;
+module.exports = mongoose.model('Order',OrderSchema);
 
-User.hasMany(Order)
-Order.belongsTo(User)

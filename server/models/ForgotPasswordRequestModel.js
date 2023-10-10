@@ -1,27 +1,20 @@
-const SequelizePackage = require('sequelize')
-const sequelize = require('../utils/database')
-const User = require('./userModel');
 
-const ForgotPasswordRequest = sequelize.define('forgotPasswordRequest',{
+const mongoose = require('mongoose')
+
+
+const ForgotPasswordRequestSchema = new mongoose.Schema({
     
-    id:{
-        type:SequelizePackage.INTEGER,
-        autoIncrement:true,
-        primaryKey:true,
-        allowNull:false
-    },
     uuid:{
-        type:SequelizePackage.STRING,
-        allowNull:false
+        type:String,
+        require:true
     },
     isActive:{
-        type:SequelizePackage.BOOLEAN,
+        type:Boolean,
         
     },
 
 })
 
-User.hasMany(ForgotPasswordRequest);
-ForgotPasswordRequest.belongsTo(User)
 
-module.exports = ForgotPasswordRequest
+
+module.exports = mongoose.model('ForgotPasswordRequest', ForgotPasswordRequestSchema)

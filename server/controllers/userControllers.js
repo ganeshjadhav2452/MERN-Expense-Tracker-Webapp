@@ -1,8 +1,6 @@
 const User = require("../models/userModel");
 const Bcrypt = require("bcryptjs");
 const Jwt = require("jsonwebtoken");
-const sequelize = require("../utils/database");
-
 const Sib = require("sib-api-v3-sdk");
 const ForgotPasswordRequest = require("../models/ForgotPasswordRequestModel");
 const { v4: uuidv4 } = require("uuid");
@@ -10,13 +8,12 @@ require("dotenv").config({ path: "../.env" });
 
 module.exports = userControllers = {
   signUp: async (req, res) => {
-    const transactionObj = await sequelize.transaction();
 
-    const userExists = await User.findAll(
-      { where: { email: req.body.email } },
-      { transaction: transactionObj }
+
+    const userExists = await User.find(
+      { email: req.body.email }
     );
-
+    console.log('this is user', userExists)
     if (userExists.length === 0) {
       const bcryptedPassword = await Bcrypt.hash(req.body.password, 10);
       try {
@@ -27,10 +24,10 @@ module.exports = userControllers = {
           total_cost: 0,
         });
 
-        await transactionObj.commit();
+
         res.status(200).send(result);
       } catch (error) {
-        await transactionObj.rollback();
+
         console.log(error);
         res.status(400).send("sorry something went wrong");
       }
@@ -43,8 +40,8 @@ module.exports = userControllers = {
 
     const email = req.body.email;
 
-    const isUserEmailExists = await User.findAll({ where: { email: email } });
-  
+    const isUserEmailExists = await User.find({ email: email });
+    console.log('isUserEmailExists', isUserEmailExists)
     const password = await Bcrypt.compare(
       req.body.password,
       isUserEmailExists[0].password
@@ -54,7 +51,7 @@ module.exports = userControllers = {
       return res.status(404).send("User Not Found !");
     } else if (password && isUserEmailExists[0].email == email) {
       return Jwt.sign(
-        { id: isUserEmailExists[0].id },
+        { id: isUserEmailExists[0]._id },
         process.env.JWT_SECRETE_KEY,
 
         (err, token) => {
@@ -73,8 +70,8 @@ module.exports = userControllers = {
 
   getInitialUserDetails: async (req, res) => {
     try {
-      const userDetails = await User.findAll({ where: { id: req.userId } });
-    
+      const userDetails = await User.find({ id: req.userId });
+
       res.status(200).json({
         isPremiumUser: userDetails[0].isPremiumUser,
         email: userDetails[0].email,
@@ -87,8 +84,8 @@ module.exports = userControllers = {
   },
 
   sendMailForResetPassword: async (req, res, next) => {
-    const isUserRegistered = await User.findAll({
-      where: { email: req.body.email },
+    const isUserRegistered = await User.find({
+      email: req.body.email
     });
 
     if (isUserRegistered.length === 0) {
@@ -102,7 +99,7 @@ module.exports = userControllers = {
 
     let apiKey = (client.authentications["api-key"].apiKey =
       process.env.SMTP_KEY);
-   
+
 
     const transactionEmailApi = new Sib.TransactionalEmailsApi();
 
@@ -180,11 +177,10 @@ module.exports = userControllers = {
   },
 
   resetPassword: async (req, res) => {
-    const transactionObj = await sequelize.transaction();
 
-    const isRequestActive = await ForgotPasswordRequest.findAll({
-      where: { uuid: req.params.uuid },
-    });
+    const isRequestActive = await ForgotPasswordRequest.find(
+      { uuid: req.params.uuid },
+    );
 
     if (isRequestActive[0].isActive === false) {
       return res.status(500).json({ message: "sorry this url is expired !" });
@@ -192,19 +188,20 @@ module.exports = userControllers = {
 
     try {
       const bcryptedPassword = await Bcrypt.hash(req.body.password, 10);
-      const response = await User.update(
-        { password: bcryptedPassword },
-        { where: { email: req.body.email } },
-        { transaction: transactionObj }
+      const response = await User.updateOne(
+        { email: req.body.email },
+        { $set: { password: bcryptedPassword } }
+
+
       );
 
-      const response2 = await ForgotPasswordRequest.update(
-        { isActive: false },
-        { where: { uuid: req.params.uuid } },
-        { transaction: transactionObj }
+      const response2 = await ForgotPasswordRequest.updateOne(
+        { uuid: req.params.uuid },
+        { $set: { isActive: false } },
+
       );
 
-      await transactionObj.commit();
+
       res
         .status(200)
         .json({ message: "your password has been updated successfully" });
