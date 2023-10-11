@@ -25,8 +25,8 @@ export const getLeaderboardData=()=>{
             "Authorization":token,
             "Content-Type":"application/json"
         }})
-        console.log(response.data.leaderboardofusers)
-        dispatch(updateData(response.data.leaderboardofusers))
+        console.log(response.data.leaderboardOfUsers)
+        dispatch(updateData(response.data.leaderboardOfUsers))
        
       } catch (error) {
         console.log(error)

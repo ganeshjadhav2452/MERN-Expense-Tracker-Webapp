@@ -86,7 +86,7 @@ function ExpenseGenerator() {
                             {!noExpense && data.map((item) => {
 
                                 return (
-                                  <Suspense fallback={<p>loading...</p>}>  <ExpenseItem key={item.id} id={item.id} title={item.title} amount={item.amount} date={item.date} debitOrCredit={item.debitOrCredit} category={item.category} /></Suspense>
+                                  <Suspense fallback={<p>loading...</p>}>  <ExpenseItem key={item._id} id={item._id} title={item.title} amount={item.amount} date={item.date} debitOrCredit={item.debitOrCredit} category={item.category} /></Suspense>
                                 )
                             })}
 

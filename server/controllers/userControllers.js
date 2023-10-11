@@ -70,7 +70,7 @@ module.exports = userControllers = {
 
   getInitialUserDetails: async (req, res) => {
     try {
-      const userDetails = await User.find({ id: req.userId });
+      const userDetails = await User.find({ _id: req.userId });
 
       res.status(200).json({
         isPremiumUser: userDetails[0].isPremiumUser,
@@ -84,6 +84,7 @@ module.exports = userControllers = {
   },
 
   sendMailForResetPassword: async (req, res, next) => {
+    console.log('this controller is getting called')
     const isUserRegistered = await User.find({
       email: req.body.email
     });
@@ -206,7 +207,7 @@ module.exports = userControllers = {
         .status(200)
         .json({ message: "your password has been updated successfully" });
     } catch (error) {
-      await transactionObj.rollback();
+  
       console.log(error);
       res
         .status(404)

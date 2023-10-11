@@ -37,7 +37,7 @@ const uploadToS3 = async (data, fileName) => {
 module.exports = awsS3Controllers = {
     downloadExpenses: async (req, res) => {
         try {
-            const expenses = await Expense.findAll({ where: { userId: req.userId } });
+            const expenses = await Expense.find( { userId: req.userId } );
             const stringyfiedExpenses = JSON.stringify(expenses)
             const fileName = `expenses${req.userId}${new Date()}.txt`;
             const fileUrl = await uploadToS3(stringyfiedExpenses, fileName)

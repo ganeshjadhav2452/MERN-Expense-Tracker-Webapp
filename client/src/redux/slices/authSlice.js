@@ -74,6 +74,7 @@ export const getInitialUserDetails = () => {
                 }
             });
            
+            console.log('this are the userdetails' , userDetails)
             dispatch(setIsPremiumUser(userDetails.data.isPremiumUser))
 
         } catch (error) {

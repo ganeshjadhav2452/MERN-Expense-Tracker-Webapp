@@ -13,7 +13,7 @@ const instance = new Razorpay({
 
 module.exports = paymentController = {
   createOrder: async (req, res) => {
-    const transactionObj = await sequelize.transaction()
+   
     try {
       await instance.orders.create(
         { amount: 50000, currency: "INR" },
@@ -26,11 +26,11 @@ module.exports = paymentController = {
             await Order.create({
               orderId: order.id,
               status: "PENDING",
-            },{transaction:transactionObj});
+            });
 
-            await transactionObj.commit()
+           
           } catch (error) {
-            await transactionObj.rollback()
+           
             console.log(error);
             res.status(500).send("sorry payment request failed");
           }
@@ -38,13 +38,13 @@ module.exports = paymentController = {
         }
         );
       } catch (error) {
-      await transactionObj.rollback()
+     console.log(error)
       res.status(403).json({ message: "something went wrong", error: error });
     }
   },
 
   verifyPayment: async (req, res) => {
-    const transactionObj = await sequelize.transaction()
+  
     
     const body =
       req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id;
@@ -56,14 +56,19 @@ module.exports = paymentController = {
 
     if (expectedSignature === req.body.razorpay_signature) {
       try {
-        await Order.update({status: 'SUCCESS'}, {where: { orderId: req.body.razorpay_order_id },transaction:transactionObj
-        })
+        await Order.updateOne(
+          { orderId: req.body.razorpay_order_id },
+          {status: 'SUCCESS'}
+        )
 
-        await User.update({isPremiumUser:true},{where:{id:req.userId},transaction:transactionObj})
+        await User.updateOne(
+          {_id:req.userId},
+          {isPremiumUser:true}
+          )
 
-        await transactionObj.commit()
+      
       } catch (error) {
-        await transactionObj.rollback()
+     
         console.log(error)
       }
       res.status(200).json({ message: "payment sucessfull" });
